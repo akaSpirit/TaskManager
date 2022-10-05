@@ -8,9 +8,26 @@ import lombok.ToString;
 @ToString
 @AllArgsConstructor
 public enum State {
-    NEW("new"),
-    IN_WORK("in work"),
-    COMPLETE("complete");
+    NEW("new") {
+        @Override
+        public State nextState() {
+            return ACTIVE;
+        }
+    },
+    ACTIVE("active") {
+        @Override
+        public State nextState() {
+            return COMPLETE;
+        }
+    },
+    COMPLETE("complete") {
+        @Override
+        public State nextState() {
+            return this;
+        }
+    };
 
     private final String name;
+
+    public abstract State nextState();
 }
