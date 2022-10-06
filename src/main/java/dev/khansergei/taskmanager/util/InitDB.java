@@ -38,11 +38,11 @@ public class InitDB {
 
     private List<TaskDto> addTasks() {
         List<TaskDto> tasks = new ArrayList<>();
-        tasks.add(new TaskDto("header1", "description1", LocalDateTime.now(), 1L));
-        tasks.add(new TaskDto("header2", "description2", LocalDateTime.now(), 2L));
-        tasks.add(new TaskDto("header3", "description3", LocalDateTime.now(), 3L));
-        tasks.add(new TaskDto("header4", "description4", LocalDateTime.now(), 4L));
-        tasks.add(new TaskDto("header5", "description5", LocalDateTime.now(), 5L));
+        tasks.add(new TaskDto("task 1", "description", LocalDateTime.now(), "email1@email"));
+        tasks.add(new TaskDto("task 2", "description", LocalDateTime.now(), "email1@email"));
+        tasks.add(new TaskDto("task 3", "description", LocalDateTime.now(), "email1@email"));
+        tasks.add(new TaskDto("task 4", "description", LocalDateTime.now(), "email4@email"));
+        tasks.add(new TaskDto("task 5", "description", LocalDateTime.now(), "email5@email"));
         return tasks;
     }
 }

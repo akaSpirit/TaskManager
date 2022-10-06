@@ -2,6 +2,7 @@ package dev.khansergei.taskmanager.dao;
 
 import dev.khansergei.taskmanager.dto.TaskDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
@@ -27,7 +28,7 @@ public class TaskDao {
                 "header varchar(100) not null, " +
                 "description text default 'default description', " +
                 "deadline timestamp without time zone not null, " +
-                "user_id integer not null REFERENCES users (id), " +
+                "user_email varchar not null references users (email), " +
                 "state text default 'new' );";
         jdbcTemplate.update(sql);
     }
@@ -48,16 +49,26 @@ public class TaskDao {
 
     public void addData(List<TaskDto> tasks) {
         long r = new Random().nextLong(10, 30);
-        String sql = "insert into tasks(header, description, deadline, user_id) values(?, ?, ?, ?)";
+        String sql = "insert into tasks(header, description, deadline, user_email) values(?, ?, ?, ?)";
         for (TaskDto t : tasks) {
             jdbcTemplate.update(conn -> {
                 PreparedStatement ps = conn.prepareStatement(sql);
                 ps.setString(1, t.getHeader());
                 ps.setString(2, t.getDescription());
                 ps.setTimestamp(3, Timestamp.valueOf(t.getDeadline().plusDays(r)));
-                ps.setInt(4, t.getUserId().intValue());
+                ps.setString(4, t.getUserEmail());
                 return ps;
             });
         }
+    }
+
+    public List<TaskDto> getTasksByEmail(String email) {
+        String sql = "select * from tasks where user_email = ?";
+        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(TaskDto.class), email);
+    }
+
+    public List<TaskDto> getAllTasks() {
+        String sql = "select * from tasks";
+        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(TaskDto.class));
     }
 }

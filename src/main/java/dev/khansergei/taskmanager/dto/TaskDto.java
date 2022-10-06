@@ -20,14 +20,14 @@ public class TaskDto {
     private String header;
     private String description;
     private LocalDateTime deadline;
-    @JsonProperty("user_id")
-    private Long userId;
+    @JsonProperty("user_email")
+    private String userEmail;
     private State state;
 
-    public TaskDto(String header, String description, LocalDateTime deadline, Long userId) {
+    public TaskDto(String header, String description, LocalDateTime deadline, String userEmail) {
         this.header = header;
         this.description = description;
         this.deadline = deadline;
-        this.userId = userId;
+        this.userEmail = userEmail;
     }
 }

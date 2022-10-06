@@ -16,7 +16,7 @@ import java.util.List;
 public class UserDao {
     private final JdbcTemplate jdbcTemplate;
     private final PasswordEncoder encoder = new BCryptPasswordEncoder();
-    private final String temp = "select u.id, u.username, u.email, u.password ";
+//    private final String temp = "select u.id, u.username, u.email, u.password ";
 
     public void dropTableUsers() {
         String sql = "drop table if exists users";
@@ -30,23 +30,25 @@ public class UserDao {
 
     public void createTableUsers() {
         String sql = "create table users ( " +
-                "id bigserial primary key not null, " +
-                "username varchar(50) not null, " +
-                "email varchar(50) not null, " +
+                "id bigserial not null, " +
+                "username varchar not null, " +
+                "email varchar not null, " +
                 "password varchar not null, " +
-                "enabled boolean not null);";
+                "enabled boolean not null, " +
+                "primary key (email) );";
         jdbcTemplate.update(sql);
     }
 
     public void createTableAuth() {
         String sql = "create table authorities ( " +
                 "id bigserial primary key not null, " +
-                "user_id integer not null references users(id), " +
-                "authority text not null);";
+                "username varchar not null references users(email), " +
+                "authority text not null );";
+//                "foreign key (username) references users(email) );";
         jdbcTemplate.update(sql);
     }
 
-    private boolean ifExists(User user) {
+    private boolean ifExists(UserDto user) {
         if (existsEmail(user.getEmail()))
             return true;
         return false;
@@ -60,9 +62,9 @@ public class UserDao {
     }
 
     private void createAuthority(String email) {
-        var userId = getIdByEmail(email);
-        String sql = "insert into authorities(user_id, authority) values(?, 'USER')";
-        jdbcTemplate.update(sql, userId);
+//        var userId = getIdByEmail(email);
+        String sql = "insert into authorities(username, authority) values(?, 'USER')";
+        jdbcTemplate.update(sql, email);
     }
 
     public Long getIdByEmail(String email) {
@@ -70,7 +72,7 @@ public class UserDao {
         return jdbcTemplate.queryForObject(sql, Long.class, email);
     }
 
-    public String addUser(User user) {
+    public String addUser(UserDto user) {
         if (!ifExists(user)) {
             String sql = "insert into users(username, email, password, enabled) values(?, ?, ?, true)";
             var sm = jdbcTemplate.update(sql, user.getUsername(), user.getEmail(), encoder.encode(user.getPassword()));
@@ -82,7 +84,7 @@ public class UserDao {
 
     public void addData(List<UserDto> users) {
         String sql = "insert into users(username, email, password, enabled) values(?, ?, ?, ?)";
-        String sqlAuth = "insert into authorities(user_id, authority) values(?, ?)";
+        String sqlAuth = "insert into authorities(username, authority) values(?, ?)";
         for (int i = 0; i < users.size(); i++) {
             int finalI = i;
             jdbcTemplate.update(conn -> {
@@ -93,7 +95,7 @@ public class UserDao {
                 ps.setBoolean(4, users.get(finalI).isEnabled());
                 return ps;
             });
-            jdbcTemplate.update(sqlAuth, i + 1, "USER");
+            jdbcTemplate.update(sqlAuth, users.get(i).getEmail(), "USER");
         }
     }
 }

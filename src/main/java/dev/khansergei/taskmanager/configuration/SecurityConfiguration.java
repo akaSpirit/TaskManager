@@ -33,21 +33,20 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .usersByUsernameQuery("select email, password, enabled "
                         + "from users "
                         + "where email = ?")
-                .authoritiesByUsernameQuery("select users.username, authority "
+                .authoritiesByUsernameQuery("select username, authority "
                         + "from authorities "
-                        + "inner join users on authorities.user_id = users.id "
                         + "where username = ?");
+
+//                .authoritiesByUsernameQuery("select u.email, a.authority "
+//                        + "from authorities a "
+//                        + "inner join users u on a.user_id = u.id "
+//                        + "where username = ?");
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers(HttpMethod.POST, "/likes/**",
-                        "/comments/**",
-                        "/posts/**",
-                        "/subscriptions/**").fullyAuthenticated()
-                .antMatchers(HttpMethod.DELETE, "/comments/**",
-                        "/posts/**").fullyAuthenticated();
+                .antMatchers("/tasks/**").fullyAuthenticated();
 
         http.authorizeRequests()
                 .anyRequest()
