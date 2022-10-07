@@ -1,7 +1,6 @@
 package dev.khansergei.taskmanager.dao;
 
 import dev.khansergei.taskmanager.dto.UserDto;
-import dev.khansergei.taskmanager.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -16,7 +15,6 @@ import java.util.List;
 public class UserDao {
     private final JdbcTemplate jdbcTemplate;
     private final PasswordEncoder encoder = new BCryptPasswordEncoder();
-//    private final String temp = "select u.id, u.username, u.email, u.password ";
 
     public void dropTableUsers() {
         String sql = "drop table if exists users";
@@ -44,7 +42,6 @@ public class UserDao {
                 "id bigserial primary key not null, " +
                 "username varchar not null references users(email), " +
                 "authority text not null );";
-//                "foreign key (username) references users(email) );";
         jdbcTemplate.update(sql);
     }
 

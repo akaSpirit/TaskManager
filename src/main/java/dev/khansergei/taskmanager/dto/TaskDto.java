@@ -1,7 +1,6 @@
 package dev.khansergei.taskmanager.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import dev.khansergei.taskmanager.entity.State;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

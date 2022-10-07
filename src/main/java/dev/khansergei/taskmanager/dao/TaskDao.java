@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component;
 import java.sql.PreparedStatement;
 import java.sql.Timestamp;
 import java.util.List;
-import java.util.Optional;
 import java.util.Random;
 
 @Component
