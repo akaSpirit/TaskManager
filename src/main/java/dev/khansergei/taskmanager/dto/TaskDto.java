@@ -22,9 +22,9 @@ public class TaskDto {
     private LocalDate deadline;
     @JsonProperty("user_email")
     private String userEmail;
-    private State state;
+    private String state;
 
-    public TaskDto(String header, String description, LocalDate deadline, String userEmail) {
+    public TaskDto(String header, String description, LocalDate deadline, String userEmail, String state) {
         this.header = header;
         this.description = description;
         this.deadline = deadline;

@@ -1,6 +1,7 @@
 package dev.khansergei.taskmanager.util;
 
 import dev.khansergei.taskmanager.dto.*;
+import dev.khansergei.taskmanager.entity.State;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import dev.khansergei.taskmanager.dao.*;
@@ -38,11 +39,11 @@ public class InitDB {
 
     private List<TaskDto> addTasks() {
         List<TaskDto> tasks = new ArrayList<>();
-        tasks.add(new TaskDto("task 1", "description", LocalDate.now(), "email1@email"));
-        tasks.add(new TaskDto("task 2", "description", LocalDate.now(), "email1@email"));
-        tasks.add(new TaskDto("task 3", "description", LocalDate.now(), "email1@email"));
-        tasks.add(new TaskDto("task 4", "description", LocalDate.now(), "email4@email"));
-        tasks.add(new TaskDto("task 5", "description", LocalDate.now(), "email5@email"));
+        tasks.add(new TaskDto("task 1", "description", LocalDate.now(), "email1@email", State.NEW.toString()));
+        tasks.add(new TaskDto("task 2", "description", LocalDate.now(), "email1@email", State.NEW.toString()));
+        tasks.add(new TaskDto("task 3", "description", LocalDate.now(), "email1@email", State.NEW.toString()));
+        tasks.add(new TaskDto("task 4", "description", LocalDate.now(), "email4@email", State.NEW.toString()));
+        tasks.add(new TaskDto("task 5", "description", LocalDate.now(), "email5@email", State.NEW.toString()));
         return tasks;
     }
 }

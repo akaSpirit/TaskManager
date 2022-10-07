@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import java.sql.PreparedStatement;
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 
 @Component
@@ -31,7 +32,7 @@ public class TaskDao {
                 "description text default 'default description', " +
                 "deadline timestamp without time zone not null, " +
                 "user_email varchar references users (email), " +
-                "state text default 'new' );";
+                "state text not null default 'new');";
         jdbcTemplate.update(sql);
     }
 
@@ -62,26 +63,49 @@ public class TaskDao {
         }
     }
 
-    public List<TaskDto> getTasksByEmail(String email) {
-        String sql = "select id, header, description, deadline from tasks where user_email = ?";
+    public List<TaskDto> getTasks(String email) {
+        String sql = "select id, header, state, deadline from tasks where user_email = ?";
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(TaskDto.class), email);
     }
 
     public TaskDto findTaskById(Long id, Authentication auth) {
-        var email = auth.getName();
-        String sql = "select id, header, description, deadline from tasks where id = ? and user_email = ?";
-        return jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(TaskDto.class), id, email);
+        String sql = "select * from tasks where id = ? and user_email = ?";
+        return jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(TaskDto.class), id, auth.getName());
     }
 
-    public ResponseEntity<?> changeState(Long id, String str, Authentication auth) {
-        String sql = "update tasks set state = ? where id = ?";
+    public ResponseEntity<?> changeState(Long id, Authentication auth) {
+        if (!isTaskExist(id))
+            return ResponseEntity.badRequest().body("Such task not exist");
+        if (!isTaskOwner(id, auth))
+            return ResponseEntity.badRequest().body("You cannot change state if task isn't yours");
         var taskDto = findTaskById(id, auth);
+        var tableState = taskDto.getState();
+        var state = findStateByValue(tableState);
 
-        if (taskDto.getState() != State.COMPLETE) {
-            State state = State.valueOf(str.toUpperCase());
-            taskDto.setState(state.nextState());
-            return ResponseEntity.ok(jdbcTemplate.update(sql, str, id));
+        if (!taskDto.getState().equalsIgnoreCase("complete")) {
+            String sql = "update tasks set state = ? where id = ?";
+            var updateState = state.nextState().getName();
+            taskDto.setState(updateState);
+            return ResponseEntity.ok(jdbcTemplate.update(sql, updateState, id));
         }
         return ResponseEntity.badRequest().body("Task already complete");
+    }
+
+    public boolean isTaskOwner(Long id, Authentication auth) {
+        String query = "select count(id) from tasks where id = ? and user_email = ?;";
+        var result = jdbcTemplate.queryForObject(query, Integer.class, id, auth.getName());
+        return result == 1;
+    }
+
+    public State findStateByValue(String str) {
+        if (str.equalsIgnoreCase("new")) return State.NEW;
+        if (str.equalsIgnoreCase("active")) return State.ACTIVE;
+        return State.COMPLETE;
+    }
+
+    public boolean isTaskExist(Long id) {
+        String query = "select count(*) from tasks where id = ?";
+        var count = jdbcTemplate.queryForObject(query, Integer.class, id);
+        return count == 1;
     }
 }

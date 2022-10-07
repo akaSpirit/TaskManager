@@ -17,9 +17,9 @@ import java.time.LocalDate;
 public class TaskController {
     private final TaskService taskService;
 
-    @GetMapping("/{user_email}")
-    public ResponseEntity<?> getTasksByEmail(@PathVariable String user_email, Authentication auth) {
-        return new ResponseEntity<>(taskService.getTasksByEmail(user_email, auth), HttpStatus.OK);
+    @GetMapping
+    public ResponseEntity<?> getTasks(Authentication auth) {
+        return new ResponseEntity<>(taskService.getTasks(auth), HttpStatus.OK);
     }
 
     @PostMapping("/add")
@@ -34,8 +34,8 @@ public class TaskController {
         return new ResponseEntity<>(taskService.findTaskById(id, auth), HttpStatus.OK);
     }
 
-    @GetMapping("/{id}/{state}")
-    public ResponseEntity<?> changeState(@PathVariable Long id, @PathVariable String state, Authentication auth) {
-        return new ResponseEntity<>(taskService.changeState(id, state, auth), HttpStatus.OK);
+    @GetMapping("/change_state/{id}")
+    public ResponseEntity<?> changeState(@PathVariable Long id, Authentication auth) {
+        return new ResponseEntity<>(taskService.changeState(id, auth), HttpStatus.OK);
     }
 }

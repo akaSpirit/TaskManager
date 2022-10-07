@@ -14,10 +14,10 @@ import java.util.Optional;
 public class TaskService {
     private final TaskDao taskDao;
 
-    public Optional getTasksByEmail(String email, Authentication auth) {
-        if (!auth.getName().equals(email))  //check is task(s) owner
+    public Optional getTasks(Authentication auth) {
+        if(auth.getName().isEmpty())
             return Optional.empty();
-        return Optional.of(taskDao.getTasksByEmail(email));
+        return Optional.of(taskDao.getTasks(auth.getName()));
     }
 
     public TaskDto addTask(String header, String description, LocalDate deadline) {
@@ -34,8 +34,7 @@ public class TaskService {
         return Optional.of(taskDao.findTaskById(id, auth));
     }
 
-    public Optional changeState(Long id, String state, Authentication auth) {
-        return Optional.of(taskDao.changeState(id, state, auth));
-//        return "changed state";
+    public Optional changeState(Long id, Authentication auth) {
+        return Optional.of(taskDao.changeState(id, auth));
     }
 }
