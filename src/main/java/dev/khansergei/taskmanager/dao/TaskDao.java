@@ -68,9 +68,9 @@ public class TaskDao {
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(TaskDto.class), email);
     }
 
-    public TaskDto findTaskById(Long id, Authentication auth) {
+    public List<TaskDto> findTaskById(Long id, Authentication auth) {
         String sql = "select * from tasks where id = ? and user_email = ?";
-        return jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(TaskDto.class), id, auth.getName());
+        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(TaskDto.class), id, auth.getName());
     }
 
     public ResponseEntity<?> changeState(Long id, Authentication auth) {
@@ -78,7 +78,7 @@ public class TaskDao {
             return ResponseEntity.badRequest().body("Such task not exist");
         if (!isTaskOwner(id, auth))
             return ResponseEntity.badRequest().body("You cannot change state if task isn't yours");
-        var taskDto = findTaskById(id, auth);
+        var taskDto = findTaskById(id, auth).get(0);
         var tableState = taskDto.getState();
         var state = findStateByValue(tableState);
 

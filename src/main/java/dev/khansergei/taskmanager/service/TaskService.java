@@ -14,7 +14,7 @@ import java.util.Optional;
 public class TaskService {
     private final TaskDao taskDao;
 
-    public Optional getTasks(Authentication auth) {
+    public Optional<?> getTasks(Authentication auth) {
         if(auth.getName().isEmpty())
             return Optional.empty();
         return Optional.of(taskDao.getTasks(auth.getName()));
@@ -28,13 +28,13 @@ public class TaskService {
                 .build());
     }
 
-    public Optional findTaskById(Long id, Authentication auth) {
-        if (auth.getName().isEmpty())
-            return Optional.empty();
+    public Optional<?> findTaskById(Long id, Authentication auth) {
+        if (auth.getName().isEmpty() || !taskDao.isTaskExist(id) || !taskDao.isTaskOwner(id, auth))
+            return Optional.of("No such task");
         return Optional.of(taskDao.findTaskById(id, auth));
     }
 
-    public Optional changeState(Long id, Authentication auth) {
+    public Optional<?> changeState(Long id, Authentication auth) {
         return Optional.of(taskDao.changeState(id, auth));
     }
 }
