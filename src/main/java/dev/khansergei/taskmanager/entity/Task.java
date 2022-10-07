@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Data
 @Builder
@@ -16,7 +16,7 @@ public class Task {
     private Long id;
     private String header;
     private String description;
-    private LocalDateTime deadline;
+    private LocalDate deadline;
     @JsonProperty("user_email")
     private String userEmail;
     private State state;

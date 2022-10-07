@@ -8,7 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Component
 @Data
@@ -19,12 +19,12 @@ public class TaskDto {
     private Long id;
     private String header;
     private String description;
-    private LocalDateTime deadline;
+    private LocalDate deadline;
     @JsonProperty("user_email")
     private String userEmail;
     private State state;
 
-    public TaskDto(String header, String description, LocalDateTime deadline, String userEmail) {
+    public TaskDto(String header, String description, LocalDate deadline, String userEmail) {
         this.header = header;
         this.description = description;
         this.deadline = deadline;

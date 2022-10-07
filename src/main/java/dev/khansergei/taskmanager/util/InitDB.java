@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import dev.khansergei.taskmanager.dao.*;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,11 +38,11 @@ public class InitDB {
 
     private List<TaskDto> addTasks() {
         List<TaskDto> tasks = new ArrayList<>();
-        tasks.add(new TaskDto("task 1", "description", LocalDateTime.now(), "email1@email"));
-        tasks.add(new TaskDto("task 2", "description", LocalDateTime.now(), "email1@email"));
-        tasks.add(new TaskDto("task 3", "description", LocalDateTime.now(), "email1@email"));
-        tasks.add(new TaskDto("task 4", "description", LocalDateTime.now(), "email4@email"));
-        tasks.add(new TaskDto("task 5", "description", LocalDateTime.now(), "email5@email"));
+        tasks.add(new TaskDto("task 1", "description", LocalDate.now(), "email1@email"));
+        tasks.add(new TaskDto("task 2", "description", LocalDate.now(), "email1@email"));
+        tasks.add(new TaskDto("task 3", "description", LocalDate.now(), "email1@email"));
+        tasks.add(new TaskDto("task 4", "description", LocalDate.now(), "email4@email"));
+        tasks.add(new TaskDto("task 5", "description", LocalDate.now(), "email5@email"));
         return tasks;
     }
 }
